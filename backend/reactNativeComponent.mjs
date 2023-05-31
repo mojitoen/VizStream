@@ -20,8 +20,9 @@ const OBSComponent = () => {
 
 
         const { currentProgramSceneName } = await obs.call('GetCurrentProgramScene');
+    
         setCurrentProgramSceneName(currentProgramSceneName);
-        
+
 
       } catch (error) {
         console.error('Failed to connect', error.code, error.message);
