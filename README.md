@@ -1,10 +1,10 @@
 # VizStream
  Bruker nå Expo Go.
  
- # iOS
+ iOS
  https://apps.apple.com/us/app/expo-go/id982107779
  
- # Android
+ Android
  https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en_US
  
  Installer appen, kjør ```npm install``` og deretter ```npx expo start```.
