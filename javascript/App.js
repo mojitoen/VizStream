@@ -1,48 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-web';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image} from 'react-native';
 
-export default function App() {
+
+
+function App() {
   return (
     
     <View style={styles.container}>
-      <Text style={styles.Text}>Testing</Text>
+      <Image style={styles.Image} source={require('./vizrt-logo-front.png')}></Image>
+      <Text style={styles.Text}>Connect to OBS</Text>
       <StatusBar style="auto" />
+      <TextInput style={styles.TextInput} placeholder="IP-adress"/>
+      <TouchableOpacity style={styles.ConnectBtn}>  
+      <Text style={styles.btnText}>Connect</Text>
+      </TouchableOpacity>
     </View>
-
-    
-
   );
 }
-
-const Grid = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* Top Navigation */}
-      <View style={styles.navigation}>
-        {/* Navigation components */}
-      </View>
-
-      {/* Grid */}
-      <View style={styles.gridContainer}>
-        {[...Array(3)].map((_, rowIndex) => (
-          <View key={rowIndex} style={styles.row}>
-            {[...Array(5)].map((_, cellIndex) => (
-              <View key={cellIndex} style={styles.cell}>
-                {/* Grid cell content */}
-              </View>
-            ))}
-          </View>
-        ))}
-      </View>
-
-      {/* Bottom Navigation */}
-      <View style={styles.navigation}>
-        {/* Navigation components */}
-      </View>
-    </SafeAreaView>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -52,8 +27,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Text:{
-    color: '#FFFFFF'
+    color: '#EF824F', 
+    fontSize: 25, 
+  }, 
+  ConnectBtn:{
+    alignItems: 'center',
+    backgroundColor: '#DE7849',
+    padding: 10,
+  }, 
+  btnText:{
+    fontSize: 20, 
+  },
+  TextInput: {
+    height: 40,
+    backgroundColor: 'azure', 
+    fontSize: 20,  
+    width: 200,
+    
+  },
+  Image:{
+    height: 150, 
+    width: 300,
   }
+
 });
 
-
+export default App; 
