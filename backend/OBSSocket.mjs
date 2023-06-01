@@ -48,6 +48,6 @@ async function startStream() {
 };
 
 //Stoppen stream
-async function startStream() {
+async function StopStream() {
   await obs.call('StopStream');
 };
