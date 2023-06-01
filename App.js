@@ -9,6 +9,9 @@ import OBSWebSocket from 'obs-websocket-js';
 function App() {
 const [ipAddress, setIpAddress] = useState('');
 
+//Temp usestate som henter verdien til inputText onchange. Dette gjør at ikke useEffecten kjører mange ganger mens bruker skriver IP.
+const [inputText, setInputText] = useState('');
+
 const obs = new OBSWebSocket();
 
   useEffect(() => {
@@ -24,6 +27,7 @@ const obs = new OBSWebSocket();
         //Error catcher  
       } catch (error) {
         console.error('Failed to connect', error.code, error.message);
+        setIpAddress('');
       }
     };
 
@@ -34,7 +38,12 @@ const obs = new OBSWebSocket();
 
   }, [ipAddress]);
 
-  
+
+  //Når bruker klikker "connect" knappen, så settes ipAddress til verdien av inputText sånn at connection funksjonen kjøres.
+  const handleButtonClick = () => {
+    setIpAddress(inputText)
+  };
+
 
   return (
     
@@ -42,8 +51,8 @@ const obs = new OBSWebSocket();
       <Image style={styles.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
       <Text style={styles.Text}>Connect to OBS</Text>
       <StatusBar style="auto" />
-      <TextInput style={styles.TextInput} placeholder="IP-address"/>
-      <TouchableOpacity style={styles.ConnectBtn}>  
+      <TextInput style={styles.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
+      <TouchableOpacity style={styles.ConnectBtn} onPress={handleButtonClick}>  
       <Text style={styles.btnText}>Connect</Text>
       </TouchableOpacity>
     </View>
