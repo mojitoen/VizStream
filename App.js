@@ -41,12 +41,31 @@ const obs = new OBSWebSocket();
   }, [ipAddress]);
 
 
+   //Funksjon som henter Scene status og håndterer eventuelle errors
+  const getSceneBtn = async () => {
+    try {
+      if (obs) {
+        //await setScene(obs, 'KulScene2');
+        console.log(await getScene(obs));
+        return await getScene(obs);
+      } else {
+        console.error('OBS connection not established.');
+      }
+    } catch (error) {
+      console.error('Error while getting scene:', error);
+    }
+  };
+
+   const getScene = async (obs) => {
+    return await obs.call('GetCurrentProgramScene');
+  };
+
   //Når bruker klikker "connect" knappen, så settes ipAddress til verdien av inputText sånn at connection funksjonen kjøres.
   const handleButtonClick = () => {
     setIpAddress(inputText)
   };
 
-  if(connectedStatus) {
+  if(!connectedStatus) {
     return (
     
       <View style={styles.container}>
@@ -59,11 +78,13 @@ const obs = new OBSWebSocket();
         </TouchableOpacity>
       </View>
     );
-  } else if (!connectedStatus) {
+  } else if (connectedStatus) {
     return (
-      <div>
-        <Text>Masse knapper</Text>
-      </div>
+      <>
+        <TouchableOpacity onPress={getSceneBtn}>
+          <Text>Get Scene List</Text>
+        </TouchableOpacity>
+      </>
     )
   }
 }
