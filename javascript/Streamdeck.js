@@ -1,36 +1,42 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-web';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-web';
+import { View, StyleSheet, SafeAreaView, Button } from 'react-native';
 
-export default function App() {
-  return (
-    
-    <View style={styles.container}>
-      <Text style={styles.Text}>Testing</Text>
-      <StatusBar style="auto" />
-    </View>
+const App = () => {
+  const buttonLabels = [
+    ['Button 1', 'Button 2'],
+    ['Button 3', 'Button 4'],
+    ['Button 5', 'Button 6'],
+    ['Button 7', 'Button 8']
+  ];
 
-    
+  const handleButtonClick = (title) => {
+    console.log(`You clicked Button: ${title}`);
+  };
 
-  );
-}
-
-const Grid = () => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.navigation}>
-        {/* Navigation components */}
+        {/* Add your components for top navigation */}
       </View>
 
       {/* Grid */}
       <View style={styles.gridContainer}>
-        {[...Array(3)].map((_, rowIndex) => (
+        {buttonLabels.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
-            {[...Array(5)].map((_, cellIndex) => (
-              <View key={cellIndex} style={styles.cell}>
-                {/* Grid cell content */}
-              </View>
+            {row.map((title, cellIndex) => (
+
+              <TouchableOpacity
+                key={cellIndex}
+                style={styles.cell}
+                onPress={() => handleButtonClick(title)}>
+
+                <Text 
+                    style={styles.buttonText}>{title}
+                </Text>
+              </TouchableOpacity>
             ))}
           </View>
         ))}
@@ -38,22 +44,44 @@ const Grid = () => {
 
       {/* Bottom Navigation */}
       <View style={styles.navigation}>
-        {/* Navigation components */}
+        {/* Add your components for bottom navigation */}
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+ 
+    container: {
+    backgroundColor:'#1C3640',
     flex: 1,
-    backgroundColor: '#1C3640',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  Text:{
-    color: '#FFFFFF'
-  }
+  navigation: {
+    height: 50,
+    backgroundColor: '#1C3640',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gridContainer: {
+    flex: 1,
+    paddingLeft: 40,
+    paddingRight: 40,
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  cell: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'black',
+  },  
+    buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
 
-
+export default App;
