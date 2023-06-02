@@ -12,6 +12,8 @@ const [ipAddress, setIpAddress] = useState('');
 //Temp usestate som henter verdien til inputText onchange. Dette gjør at ikke useEffecten kjører mange ganger mens bruker skriver IP.
 const [inputText, setInputText] = useState('');
 
+const [connectedStatus, setConnectedStatus] = useState(false)
+
 const obs = new OBSWebSocket();
 
   useEffect(() => {
@@ -21,8 +23,8 @@ const obs = new OBSWebSocket();
         await obs.connect(`ws://${ipAddress}`, 'password', {
           rpcVersion: 1
         });
-        const { obsWebSocketVersion, negotiatedRpcVersion } = obs;
         console.log(`Connected to server!`);
+        setConnectedStatus(true)
         
         //Error catcher  
       } catch (error) {
@@ -44,19 +46,26 @@ const obs = new OBSWebSocket();
     setIpAddress(inputText)
   };
 
-
-  return (
+  if(connectedStatus) {
+    return (
     
-    <View style={styles.container}>
-      <Image style={styles.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
-      <Text style={styles.Text}>Connect to OBS</Text>
-      <StatusBar style="auto" />
-      <TextInput style={styles.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
-      <TouchableOpacity style={styles.ConnectBtn} onPress={handleButtonClick}>  
-      <Text style={styles.btnText}>Connect</Text>
-      </TouchableOpacity>
-    </View>
-  );
+      <View style={styles.container}>
+        <Image style={styles.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
+        <Text style={styles.Text}>Connect to OBS</Text>
+        <StatusBar style="auto" />
+        <TextInput style={styles.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
+        <TouchableOpacity style={styles.ConnectBtn} onPress={handleButtonClick}>  
+        <Text style={styles.btnText}>Connect</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  } else if (!connectedStatus) {
+    return (
+      <div>
+        <Text>Masse knapper</Text>
+      </div>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
