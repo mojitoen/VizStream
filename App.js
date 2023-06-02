@@ -14,7 +14,7 @@ const [inputText, setInputText] = useState('');
 
 const [connectedStatus, setConnectedStatus] = useState(false)
 
-const obs = new OBSWebSocket();
+const [obs, setObs] = useState(new OBSWebSocket());
 
   useEffect(() => {
     // Kobler seg til OBS og gir beskjed om at den er tilkoblet
