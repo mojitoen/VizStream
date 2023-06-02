@@ -1,7 +1,5 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-web';
-import { View, StyleSheet, SafeAreaView, Button } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Button, Text , TouchableOpacity} from 'react-native';
 
 const App = () => {
   const buttonLabels = [
