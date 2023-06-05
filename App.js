@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image, SafeAreaView} from 'react-native';
 import React from 'react';
 import OBSWebSocket from 'obs-websocket-js';
+import ButtonSettings from './javascript/ButtonSettings';
 
 
 
@@ -122,6 +123,15 @@ useEffect(() => {
     await obs.call('SetCurrentProgramScene', { sceneName: scene });
   };
 
+
+  function overlayBox () {
+    return(
+    <View style={{ flex: 1 }}>
+      <ButtonSettings />
+    </View>
+    )
+  }
+
 //Synnes connection-frontend returneres hvis useState connectedStatus ikke stemmer
   if(!connectedStatus) {
     return (
@@ -163,6 +173,12 @@ useEffect(() => {
           </View>
         ))}
       </View>
+      
+      {/* If selectionWindowVisible is true, render overlayBox */}
+
+      {selectionWindowVisible &&
+      overlayBox()
+      }
 
       {/* Bottom Navigation */}
       <View style={styles.navigation}>
