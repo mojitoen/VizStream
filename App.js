@@ -14,16 +14,25 @@ const [inputText, setInputText] = useState('');
 //State var for checking whether or not we are connected
 const [connectedStatus, setConnectedStatus] = useState(false)
 
+//TODO
+const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
+
 //OBS Tilkobling satt i en state, slik at tilkoblingen opprettholder seg
 const [obs, setObs] = useState(new OBSWebSocket());
 
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
 const buttonLabels = [
   ['Set Scene to Playing Game', 'Start Stream'],
-  ['Set Scene to Be Right Back', 'Button 4'],
+  ['Set Scene to Be Right Back', 'getSceneBtn'],
   ['Set Scene to TalkToChat', 'Start Recording'],
   ['Button 7', 'Button 8']
 ];
+
+useEffect(() => {
+  if(connectedStatus) {
+    
+  }
+}, [obs]);
 
   useEffect(() => {
     // Kobler seg til OBS og gir beskjed om at den er tilkoblet
@@ -64,6 +73,11 @@ const buttonLabels = [
     }
   };
 
+  const getSceneList = async () => {
+    console.log(await obs.call('GetSceneList'));
+    return obs.call('GetSceneList');
+  }
+
   //En asynkron-funksjon som fungerer som bro til en synk knapp
    const getScene = async (obs) => {
     return await obs.call('GetCurrentProgramScene');
@@ -93,6 +107,14 @@ const buttonLabels = [
     if(buttonTitle == "Start Stream") {
       obs.call('StartStream');
     }
+
+    if(buttonTitle == "getSceneBtn") {
+      getSceneList();
+    }
+  }
+
+  const handleLongPress = (buttonTitle) => {
+    setSelectionWindowVisible(true);
   }
 
   //Async funksjon for å overføre til synk funksjon
@@ -131,8 +153,8 @@ const buttonLabels = [
               <TouchableOpacity
                 key={cellIndex}
                 style={styles.cell}
-                onPress={() => handleButtonClick(title)}>
-
+                onPress={() => handleButtonClick(title)}
+                onLongPress={() => (handleLongPress(title))}>
                 <Text 
                     style={styles.buttonText}>{title}
                 </Text>
