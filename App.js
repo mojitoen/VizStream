@@ -124,10 +124,10 @@ useEffect(() => {
   };
 
 
-  function overlayBox () {
+  function overlayBox (btnName) {
     return(
     <View style={{ flex: 1 }}>
-      <ButtonSettings />
+      <ButtonSettings name={btnName} />
     </View>
     )
   }
