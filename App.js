@@ -119,7 +119,7 @@ const buttonIcons = [
   };
 
 //Synnes connection-frontend returneres hvis useState connectedStatus ikke stemmer
-  if(connectedStatus) {
+  if(!connectedStatus) {
     return (
       <View style={stylesconnect.container}>
         <Image style={stylesconnect.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
@@ -132,7 +132,7 @@ const buttonIcons = [
       </View>
     );
     //Hvis vi har koblet oss til, så re-renderer vi til Matias sin Knapp-frontend.
-  } else if (!connectedStatus) {
+  } else if (connectedStatus) {
       {/* Grid */}
 
       return (
