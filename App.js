@@ -15,6 +15,12 @@ const [inputText, setInputText] = useState('');
 //State var for checking whether or not we are connected
 const [connectedStatus, setConnectedStatus] = useState(false)
 
+//Denne staten er brukt som callback i buttonsettings for å kunne returne det nye navnet til knappen
+const [changedBtnName, setChangedBtnName] = useState('')
+
+//Denne staten er for å sette valgt tittel for å snakke med buttonsettings
+const [selectedBtn, setSelectedBtn] = useState('')
+
 //TODO
 const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
 
@@ -22,12 +28,12 @@ const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
 const [obs, setObs] = useState(new OBSWebSocket());
 
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
-const buttonLabels = [
+const [buttonLabels, setButtonLabels] = useState([
   ['Set Scene to Playing Game', 'Start Stream'],
   ['Set Scene to Be Right Back', 'getSceneBtn'],
   ['Set Scene to TalkToChat', 'Start Recording'],
   ['Button 7', 'Button 8']
-];
+]);
 
 useEffect(() => {
   if(connectedStatus) {
@@ -59,6 +65,15 @@ useEffect(() => {
 
   }, [ipAddress]);
 
+
+//Replace the new name in the array
+  function replaceValue(searchValue, replaceValue) {
+    const updatedLabels = buttonLabels.map(row =>
+      row.map(label => (label === searchValue ? replaceValue : label))
+    );
+    setButtonLabels(updatedLabels);
+
+  }
 
    //Funksjon som henter Scene status og håndterer eventuelle errors
   const getSceneBtn = async () => {
@@ -116,6 +131,7 @@ useEffect(() => {
 
   const handleLongPress = (buttonTitle) => {
     setSelectionWindowVisible(true);
+    setSelectedBtn(buttonTitle)
   }
 
   //Async funksjon for å overføre til synk funksjon
@@ -123,11 +139,11 @@ useEffect(() => {
     await obs.call('SetCurrentProgramScene', { sceneName: scene });
   };
 
-
+  //Dette er den overlayen som vises når en knapp holdes inne 
   function overlayBox (btnName) {
     return(
     <View style={{ flex: 1 }}>
-      <ButtonSettings name={btnName} />
+      <ButtonSettings name={btnName} changename={setChangedBtnName} closeBox={setSelectionWindowVisible} changearray={replaceValue} />
     </View>
     )
   }
@@ -177,7 +193,7 @@ useEffect(() => {
       {/* If selectionWindowVisible is true, render overlayBox */}
 
       {selectionWindowVisible &&
-      overlayBox()
+      overlayBox(selectedBtn)
       }
 
       {/* Bottom Navigation */}

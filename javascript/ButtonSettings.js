@@ -1,18 +1,32 @@
 import React from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { useEffect, useState } from 'react';
 
-const ButtonSettings = (props) => {
+
+
+const ButtonSettings = props => {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = (text) => {
+    setInputValue(text);
+  };
+
   return (
     <View style={styles.overlay}>
       <View style={styles.box}>
         <TextInput
           style={styles.input}
-          placeholder="Enter something..."
+          value={inputValue}
+          onChangeText={handleInputChange}
+          placeholder={props.name}
         />
         <Button
           title="Submit"
           onPress={() => {
-            // Handle button press logic here
+            props.changename(inputValue)
+            console.log(inputValue)
+            props.closeBox(false)
+            props.changearray(props.name, inputValue)
           }}
         />
       </View>
