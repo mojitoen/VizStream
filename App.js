@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image, SafeAreaView} from 'react-native';
 import React from 'react';
 import OBSWebSocket from 'obs-websocket-js';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
@@ -19,10 +20,27 @@ const [obs, setObs] = useState(new OBSWebSocket());
 
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
 const buttonLabels = [
-  ['Set Scene to Playing Game', 'Start Stream'],
-  ['Set Scene to Be Right Back', 'Button 4'],
-  ['Set Scene to TalkToChat', 'Start Recording'],
-  ['Button 7', 'Button 8']
+  ['Game Scene', 'Start Stream'],
+  ['Be Right Back', 'Love'],
+  ['Talk to Chat', 'Record'],
+  ['Mute', 'Audio Mixer']
+];
+
+
+// Array av farger til knappene
+const buttonColors = [
+  ['#E7514C', '#3F7C9E'],
+  ['#5D8E8D', '#46806A'],
+  ['#CF6D37', '#5D758E'],
+  ['#46806A', '#C57E31']
+];
+
+// Array av ikoner til knappene
+const buttonIcons = [
+  ['gamepad', 'play'],
+  ['hand-peace-o', 'heart'],
+  ['comments', 'video-camera'],
+  ['microphone', 'volume-off']
 ];
 
   useEffect(() => {
@@ -78,8 +96,8 @@ const buttonLabels = [
   const handleButtonClick = (buttonTitle) => {
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
-    if(buttonTitle == "Set Scene to Playing Game") {
-      setScene(obs, "Playing Game")
+    if(buttonTitle == "Set Scene to Game Scene") {
+      setScene(obs, "Game Scene")
     }
 
     if(buttonTitle == "Set Scene to Be Right Back") {
@@ -101,7 +119,7 @@ const buttonLabels = [
   };
 
 //Synnes connection-frontend returneres hvis useState connectedStatus ikke stemmer
-  if(!connectedStatus) {
+  if(connectedStatus) {
     return (
       <View style={stylesconnect.container}>
         <Image style={stylesconnect.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
@@ -114,30 +132,34 @@ const buttonLabels = [
       </View>
     );
     //Hvis vi har koblet oss til, så re-renderer vi til Matias sin Knapp-frontend.
-  } else if (connectedStatus) {
-    return (
-      <SafeAreaView style={styles.container}>
+  } else if (!connectedStatus) {
+      {/* Grid */}
+
+      return (
+    <SafeAreaView style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.navigation}>
         {/* Add your components for top navigation */}
       </View>
 
-      {/* Grid */}
-      <View style={styles.gridContainer}>
+     {/* Grid */}
+     <View style={styles.gridContainer}>
         {buttonLabels.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
-            {row.map((title, cellIndex) => (
-
-              <TouchableOpacity
-                key={cellIndex}
-                style={styles.cell}
-                onPress={() => handleButtonClick(title)}>
-
-                <Text 
-                    style={styles.buttonText}>{title}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {row.map((title, cellIndex) => {
+              const color = buttonColors[rowIndex][cellIndex];
+              console.log(`Button color: ${color}`);
+              return (
+                <TouchableOpacity
+                  key={cellIndex}
+                  style={[styles.cell, { backgroundColor: color }]}
+                  onPress={() => handleButtonClick(title)}
+                >
+                  <Icon name={buttonIcons[rowIndex][cellIndex]} size={50} color="white" />
+                  <Text style={styles.buttonText}>{title}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         ))}
       </View>
@@ -147,8 +169,8 @@ const buttonLabels = [
         {/* Add your components for bottom navigation */}
       </View>
     </SafeAreaView>
-    )
-  }
+  );
+}
 }
 
 //Styliseringen for Connection-siden. 
@@ -187,6 +209,7 @@ const stylesconnect = StyleSheet.create({
 
 
 //Stylisation for knapp-viewen
+
 const styles = StyleSheet.create({
  
   container: {
@@ -207,18 +230,23 @@ gridContainer: {
 row: {
   flex: 1,
   flexDirection: 'row',
+  margin:10,
 },
 cell: {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
   borderWidth: 1,
+  borderRadius: 25,
   borderColor: 'black',
+  margin:10,
 },  
   buttonText: {
   color: 'white',
   fontSize: 16,
+  marginTop: 10,
 },
 });
+
 
 export default App; 
