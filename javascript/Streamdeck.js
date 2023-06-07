@@ -22,8 +22,8 @@ const App = () => {
                 {/*         NB        */}
                 {/* Bytt HandleButtonClick til HandleEditClick*/}
 
-      <TouchableOpacity onPress={handleButtonClick} style={styles.editButton}>
-          <Text style={styles.editButtonText}>EditButton</Text>
+        <TouchableOpacity onPress={() => handleButtonClick('Edit')} style={styles.editButton}>
+          <Text style={styles.buttonText}>Edit Button</Text>
         </TouchableOpacity>
         
         {/*Settings knapp*/}
@@ -31,8 +31,8 @@ const App = () => {
                 {/* Bytt HandleButtonClick til HandleSettingsClick*/}
 
 
-        <TouchableOpacity onPress={handleButtonClick} style={styles.settingsButton}>
-          <Text style={styles.settingsButtonText}>Settings</Text>
+        <TouchableOpacity onPress={() =>handleButtonClick('Settings')} style={styles.settingsButton}>
+          <Text style={styles.buttonText}>Settings</Text>
         </TouchableOpacity>
 
       </View>
@@ -58,8 +58,12 @@ const App = () => {
       </View>
 
       {/* Bottom Navigation */}
-      <View style={styles.navigation}>
-        {/* Add your components for bottom navigation */}
+      <View style={styles.bottomNavigation}>
+
+              <TouchableOpacity onPress={() => handleButtonClick('Plus')} style={styles.addButton}>
+                <Text style={styles.addButtonIcon}>+</Text>
+              </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );
@@ -74,8 +78,8 @@ const styles = StyleSheet.create({
   navigation: {
     height: 50,
     backgroundColor: '#1C3640',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   gridContainer: {
     flex: 1,
@@ -98,12 +102,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
     editButton: {
-      alignItems: 'left',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      alignItems: 'flex-start'
     },
     settingsButton: {
-      alignItems: 'right',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      alignItems: 'flex-end'
+    },
+    bottomNavigation:{
+      justifyContent: 'center',
+      alignItems: 'center',
+
+    },
+    addButton: {
+      width: 50,
+      height: 50,
+      backgroundColor: 'orange',
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 10,
+      
+    },
+    addButtonIcon: {
+      color: 'white',
+      fontSize: 40
+
     }
 });
 
