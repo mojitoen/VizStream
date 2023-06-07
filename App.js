@@ -42,6 +42,14 @@ const [buttonLabels, setButtonLabels] = useState([
   ['Talk to Chat', 'Record'],
   ['Mute', 'Audio Mixer']
 ]);
+/*Dette er fremtiden til buttonlabels
+const [buttonLabels, setButtonLabels] = useState([
+  {key: "setScene", label: "Game Scene"},
+  {key: "setScene", label: "Be Right Back"},
+  {key: "setScene", label: "Talk to Chat"},
+  {key: "startStream", label: "Start Stream"},
+  {key: "getSceneBtn", label: "getSceneBtn"}
+])*/
 
 // Array av farger til knappene
 const buttonColors = [
