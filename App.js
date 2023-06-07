@@ -29,15 +29,16 @@ const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
 //OBS Tilkobling satt i en state, slik at tilkoblingen opprettholder seg
 const [obs, setObs] = useState(new OBSWebSocket());
 
-//Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
+//Usestate for listen over hvilke scener vi har tilgjengelig
+const [sceneList, setSceneList] = useState([]);
 
-const buttonLabels = [
+//Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
+const [buttonLabels, setButtonLabels] = useState([
   ['Game Scene', 'Start Stream'],
   ['Be Right Back', 'Love'],
   ['Talk to Chat', 'Record'],
   ['Mute', 'Audio Mixer']
-];
-
+]);
 
 // Array av farger til knappene
 const buttonColors = [
@@ -103,9 +104,13 @@ const buttonIcons = [
     }
   };
 
+  //Denne funksjonen henter og returnerer en ren liste med alle scener
   const getSceneList = async () => {
-    console.log(await obs.call('GetSceneList'));
-    return obs.call('GetSceneList');
+    const response = await obs.call('GetSceneList');
+    const sceneNames = response.scenes.map(scene => scene.sceneName);
+
+    setSceneList(sceneNames);
+    return sceneNames;
   }
 
   //En asynkron-funksjon som fungerer som bro til en synk knapp
@@ -120,6 +125,7 @@ const buttonIcons = [
 
   //Funksjon for å trykke på knapper
   const handleButtonClick = (buttonTitle) => {
+    console.log(buttonTitle + " pressed")
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
     if(buttonTitle == "Set Scene to Game Scene") {
@@ -144,6 +150,8 @@ const buttonIcons = [
   }
 
   const handleLongPress = (buttonTitle) => {
+    //Henter en liste over scener og setter den i en state
+    getSceneList();
     setSelectionWindowVisible(true);
     setSelectedBtn(buttonTitle)
   }
@@ -156,8 +164,19 @@ const buttonIcons = [
   //Dette er den overlayen som vises når en knapp holdes inne 
   function overlayBox (btnName) {
     return(
-    <View style={{ flex: 1 }}>
-      <ButtonSettings name={btnName} changename={setChangedBtnName} closeBox={setSelectionWindowVisible} changearray={replaceValue} />
+    <View style={styleCustomizeWindow.container}>
+      <Text>What should this button do?</Text>
+      {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
+      {sceneList.map((scene) => (
+        <TouchableOpacity>
+          <Text>{scene}</Text>
+          </TouchableOpacity>
+      ))}
+      <Text>Button Label</Text>
+      <TextInput placeholder='Button Label'></TextInput>
+      <TouchableOpacity onPress={() => {setSelectionWindowVisible(false)}}>
+        <Text>Apply changes</Text>
+      </TouchableOpacity>
     </View>
     )
   }
@@ -306,6 +325,11 @@ cell: {
   fontSize: 16,
   marginTop: 10,
 },
+});
+
+
+const styleCustomizeWindow = StyleSheet.create({
+
 });
 
 
