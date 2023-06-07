@@ -147,7 +147,7 @@ const [buttonLabels, setButtonLabels] = useState([
   //Dette er den overlayen som vises når en knapp holdes inne 
   function overlayBox (btnName) {
     return(
-    <View style={{ flex: 1 }}>
+    <View style={styleCustomizeWindow.container}>
       <Text>What should this button do?</Text>
       {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
       {sceneList.map((scene) => (
@@ -156,7 +156,10 @@ const [buttonLabels, setButtonLabels] = useState([
           </TouchableOpacity>
       ))}
       <Text>Button Label</Text>
-      <ButtonSettings name={btnName} changename={setChangedBtnName} closeBox={setSelectionWindowVisible} changearray={replaceValue}></ButtonSettings>
+      <TextInput placeholder='Button Label'></TextInput>
+      <TouchableOpacity onPress={() => {setSelectionWindowVisible(false)}}>
+        <Text>Apply changes</Text>
+      </TouchableOpacity>
     </View>
     )
   }
@@ -286,6 +289,10 @@ cell: {
   color: 'white',
   fontSize: 16,
 },
+});
+
+const styleCustomizeWindow = StyleSheet.create({
+
 });
 
 export default App; 
