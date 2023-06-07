@@ -4,6 +4,8 @@ import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image, SafeAreaVie
 import React from 'react';
 import OBSWebSocket from 'obs-websocket-js';
 import ButtonSettings from './javascript/ButtonSettings';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 
@@ -32,12 +34,27 @@ const [sceneList, setSceneList] = useState([]);
 
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
 const [buttonLabels, setButtonLabels] = useState([
-  ['Set Scene to Playing Game', 'Start Stream'],
-  ['Set Scene to Be Right Back', 'getSceneBtn'],
-  ['Set Scene to TalkToChat', 'Start Recording'],
-  ['Button 7', 'getSceneBtn']
+  ['Game Scene', 'Start Stream'],
+  ['Be Right Back', 'Love'],
+  ['Talk to Chat', 'Record'],
+  ['Mute', 'Audio Mixer']
 ]);
 
+// Array av farger til knappene
+const buttonColors = [
+  ['#E7514C', '#3F7C9E'],
+  ['#5D8E8D', '#46806A'],
+  ['#CF6D37', '#5D758E'],
+  ['#46806A', '#C57E31']
+];
+
+// Array av ikoner til knappene
+const buttonIcons = [
+  ['gamepad', 'play'],
+  ['hand-peace-o', 'heart'],
+  ['comments', 'video-camera'],
+  ['microphone', 'volume-off']
+];
 
   useEffect(() => {
     // Kobler seg til OBS og gir beskjed om at den er tilkoblet
@@ -111,8 +128,8 @@ const [buttonLabels, setButtonLabels] = useState([
     console.log(buttonTitle + " pressed")
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
-    if(buttonTitle == "Set Scene to Playing Game") {
-      setScene(obs, "Playing Game")
+    if(buttonTitle == "Set Scene to Game Scene") {
+      setScene(obs, "Game Scene")
     }
 
     if(buttonTitle == "Set Scene to Be Right Back") {
@@ -169,39 +186,43 @@ const [buttonLabels, setButtonLabels] = useState([
     return (
       <View style={stylesconnect.container}>
         <Image style={stylesconnect.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
-        <Text style={stylesconnect.Text}>Connect to OBS</Text>
         <StatusBar style="auto" />
         <TextInput style={stylesconnect.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
         <TouchableOpacity style={stylesconnect.ConnectBtn} onPress={handleButtonClickIP}>  
-        <Text style={stylesconnect.btnText}>Connect</Text>
+        <Text style={stylesconnect.btnText}>Connect Manually</Text>
         </TouchableOpacity>
       </View>
     );
     //Hvis vi har koblet oss til, så re-renderer vi til Matias sin Knapp-frontend.
   } else if (connectedStatus) {
-    return (
-      <SafeAreaView style={styles.container}>
+      {/* Grid */}
+
+      return (
+    <SafeAreaView style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.navigation}>
         {/* Add your components for top navigation */}
       </View>
 
-      {/* Grid */}
-      <View style={styles.gridContainer}>
+     {/* Grid */}
+     <View style={styles.gridContainer}>
         {buttonLabels.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
-            {row.map((title, cellIndex) => (
 
-              <TouchableOpacity
-                key={cellIndex}
-                style={styles.cell}
-                onPress={() => handleButtonClick(title)}
-                onLongPress={() => (handleLongPress(title))}>
-                <Text 
-                    style={styles.buttonText}>{title}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {row.map((title, cellIndex) => {
+              const color = buttonColors[rowIndex][cellIndex];
+              console.log(`Button color: ${color}`);
+              return (
+                <TouchableOpacity
+                  key={cellIndex}
+                  style={[styles.cell, { backgroundColor: color }]}
+                  onPress={() => handleButtonClick(title)}
+                >
+                  <Icon name={buttonIcons[rowIndex][cellIndex]} size={50} color="white" />
+                  <Text style={styles.buttonText}>{title}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         ))}
       </View>
@@ -217,8 +238,8 @@ const [buttonLabels, setButtonLabels] = useState([
         {/* Add your components for bottom navigation */}
       </View>
     </SafeAreaView>
-    )
-  }
+  );
+}
 }
 
 //Styliseringen for Connection-siden. 
@@ -227,7 +248,8 @@ const stylesconnect = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1C3640',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 200,
   },
   Text:{
     color: '#EF824F', 
@@ -235,28 +257,38 @@ const stylesconnect = StyleSheet.create({
   }, 
   ConnectBtn:{
     alignItems: 'center',
+    marginTop:25,
     backgroundColor: '#DE7849',
     padding: 10,
+    height: 39,
+    width: 190,
+    borderRadius:10,
   }, 
   btnText:{
-    fontSize: 20, 
+    fontSize: 18, 
+    color:'white',
+    fontWeight: 500,
   },
   TextInput: {
-    height: 40,
+    height: 60,
     backgroundColor: 'azure', 
     fontSize: 20,  
-    width: 200,
-    
-  },
-  Image:{
-    height: 150, 
     width: 300,
+    borderRadius: 20,
+    textAlign: 'center',
+    marginTop:100,
+  },
+
+  Image:{
+    height: 107, 
+    width: 163,
   }
 
 });
 
 
 //Stylisation for knapp-viewen
+
 const styles = StyleSheet.create({
  
   container: {
@@ -277,22 +309,28 @@ gridContainer: {
 row: {
   flex: 1,
   flexDirection: 'row',
+  margin:10,
 },
 cell: {
   flex: 1,
   justifyContent: 'center',
   alignItems: 'center',
   borderWidth: 1,
+  borderRadius: 25,
   borderColor: 'black',
+  margin:10,
 },  
   buttonText: {
   color: 'white',
   fontSize: 16,
+  marginTop: 10,
 },
 });
+
 
 const styleCustomizeWindow = StyleSheet.create({
 
 });
+
 
 export default App; 

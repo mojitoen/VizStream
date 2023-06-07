@@ -9,12 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^18.0.1",
     "expo": "~48.0.18",
     "expo-status-bar": "~1.4.4",
     "obs-websocket-js": "^5.0.3",
     "react": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.10"
   },
   "devDependencies": {
