@@ -153,11 +153,10 @@ useEffect(() => {
     return (
       <View style={stylesconnect.container}>
         <Image style={stylesconnect.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
-        <Text style={stylesconnect.Text}>Connect to OBS</Text>
         <StatusBar style="auto" />
         <TextInput style={stylesconnect.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
         <TouchableOpacity style={stylesconnect.ConnectBtn} onPress={handleButtonClickIP}>  
-        <Text style={stylesconnect.btnText}>Connect</Text>
+        <Text style={stylesconnect.btnText}>Connect Manually</Text>
         </TouchableOpacity>
       </View>
     );
@@ -211,7 +210,8 @@ const stylesconnect = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1C3640',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 200,
   },
   Text:{
     color: '#EF824F', 
@@ -219,22 +219,31 @@ const stylesconnect = StyleSheet.create({
   }, 
   ConnectBtn:{
     alignItems: 'center',
+    marginTop:25,
     backgroundColor: '#DE7849',
     padding: 10,
+    height: 39,
+    width: 190,
+    borderRadius:10,
   }, 
   btnText:{
-    fontSize: 20, 
+    fontSize: 18, 
+    color:'white',
+    fontWeight: 500,
   },
   TextInput: {
-    height: 40,
+    height: 60,
     backgroundColor: 'azure', 
     fontSize: 20,  
-    width: 200,
-    
-  },
-  Image:{
-    height: 150, 
     width: 300,
+    borderRadius: 20,
+    textAlign: 'center',
+    marginTop:100,
+  },
+
+  Image:{
+    height: 107, 
+    width: 163,
   }
 
 });
