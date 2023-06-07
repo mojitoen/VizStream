@@ -17,7 +17,24 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.navigation}>
-        {/* Add your components for top navigation */}
+
+        {/*Edit knapp*/}
+                {/*         NB        */}
+                {/* Bytt HandleButtonClick til HandleEditClick*/}
+
+      <TouchableOpacity onPress={handleButtonClick} style={styles.editButton}>
+          <Text style={styles.editButtonText}>EditButton</Text>
+        </TouchableOpacity>
+        
+        {/*Settings knapp*/}
+                {/*         NB        */}
+                {/* Bytt HandleButtonClick til HandleSettingsClick*/}
+
+
+        <TouchableOpacity onPress={handleButtonClick} style={styles.settingsButton}>
+          <Text style={styles.settingsButtonText}>Settings</Text>
+        </TouchableOpacity>
+
       </View>
 
       {/* Grid */}
@@ -80,6 +97,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+    editButton: {
+      alignItems: 'left',
+      justifyContent: 'center'
+    },
+    settingsButton: {
+      alignItems: 'right',
+      justifyContent: 'center'
+    }
 });
 
 export default App;
