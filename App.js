@@ -32,6 +32,9 @@ const [obs, setObs] = useState(new OBSWebSocket());
 //Usestate for listen over hvilke scener vi har tilgjengelig
 const [sceneList, setSceneList] = useState([]);
 
+//Usestate for midlertidig lagring av button-labels
+const [buttonLabelValue, setButtonLabelValue] = useState("");
+
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
 const [buttonLabels, setButtonLabels] = useState([
   ['Game Scene', 'Start Stream'],
@@ -167,14 +170,15 @@ const buttonIcons = [
     <View style={styleCustomizeWindow.container}>
       <Text>What should this button do?</Text>
       {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
+      <Text>Set scene to: </Text>
       {sceneList.map((scene) => (
         <TouchableOpacity>
           <Text>{scene}</Text>
           </TouchableOpacity>
       ))}
-      <Text>Button Label</Text>
-      <TextInput placeholder='Button Label'></TextInput>
-      <TouchableOpacity onPress={() => {setSelectionWindowVisible(false)}}>
+      <Text>Change Button Label</Text>
+      <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}></TextInput>
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false)}}>
         <Text>Apply changes</Text>
       </TouchableOpacity>
     </View>
@@ -211,12 +215,12 @@ const buttonIcons = [
 
             {row.map((title, cellIndex) => {
               const color = buttonColors[rowIndex][cellIndex];
-              console.log(`Button color: ${color}`);
               return (
                 <TouchableOpacity
                   key={cellIndex}
                   style={[styles.cell, { backgroundColor: color }]}
                   onPress={() => handleButtonClick(title)}
+                  onLongPress={() => handleLongPress(title)}
                 >
                   <Icon name={buttonIcons[rowIndex][cellIndex]} size={50} color="white" />
                   <Text style={styles.buttonText}>{title}</Text>
