@@ -178,7 +178,7 @@ const buttonIcons = [
       ))}
       <Text>Change Button Label</Text>
       <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}></TextInput>
-      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false)}}>
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false);setButtonLabelValue("");}}>
         <Text>Apply changes</Text>
       </TouchableOpacity>
     </View>
