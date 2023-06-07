@@ -27,19 +27,17 @@ const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
 //OBS Tilkobling satt i en state, slik at tilkoblingen opprettholder seg
 const [obs, setObs] = useState(new OBSWebSocket());
 
+//Usestate for listen over hvilke scener vi har tilgjengelig
+const [sceneList, setSceneList] = useState([]);
+
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
 const [buttonLabels, setButtonLabels] = useState([
   ['Set Scene to Playing Game', 'Start Stream'],
   ['Set Scene to Be Right Back', 'getSceneBtn'],
   ['Set Scene to TalkToChat', 'Start Recording'],
-  ['Button 7', 'Button 8']
+  ['Button 7', 'getSceneBtn']
 ]);
 
-useEffect(() => {
-  if(connectedStatus) {
-    
-  }
-}, [obs]);
 
   useEffect(() => {
     // Kobler seg til OBS og gir beskjed om at den er tilkoblet
@@ -89,9 +87,13 @@ useEffect(() => {
     }
   };
 
+  //Denne funksjonen henter og returnerer en ren liste med alle scener
   const getSceneList = async () => {
-    console.log(await obs.call('GetSceneList'));
-    return obs.call('GetSceneList');
+    const response = await obs.call('GetSceneList');
+    const sceneNames = response.scenes.map(scene => scene.sceneName);
+
+    setSceneList(sceneNames);
+    return sceneNames;
   }
 
   //En asynkron-funksjon som fungerer som bro til en synk knapp
@@ -106,6 +108,7 @@ useEffect(() => {
 
   //Funksjon for å trykke på knapper
   const handleButtonClick = (buttonTitle) => {
+    console.log(buttonTitle + " pressed")
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
     if(buttonTitle == "Set Scene to Playing Game") {
@@ -130,6 +133,8 @@ useEffect(() => {
   }
 
   const handleLongPress = (buttonTitle) => {
+    //Henter en liste over scener og setter den i en state
+    getSceneList();
     setSelectionWindowVisible(true);
     setSelectedBtn(buttonTitle)
   }
@@ -143,7 +148,15 @@ useEffect(() => {
   function overlayBox (btnName) {
     return(
     <View style={{ flex: 1 }}>
-      <ButtonSettings name={btnName} changename={setChangedBtnName} closeBox={setSelectionWindowVisible} changearray={replaceValue} />
+      <Text>What should this button do?</Text>
+      {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
+      {sceneList.map((scene) => (
+        <TouchableOpacity>
+          <Text>{scene}</Text>
+          </TouchableOpacity>
+      ))}
+      <Text>Button Label</Text>
+      <ButtonSettings name={btnName} changename={setChangedBtnName} closeBox={setSelectionWindowVisible} changearray={replaceValue}></ButtonSettings>
     </View>
     )
   }
