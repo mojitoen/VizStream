@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image, SafeAreaView} from 'react-native';
 import React from 'react';
 import OBSWebSocket from 'obs-websocket-js';
+import ButtonSettings from './javascript/ButtonSettings';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 
 
@@ -15,10 +17,20 @@ const [inputText, setInputText] = useState('');
 //State var for checking whether or not we are connected
 const [connectedStatus, setConnectedStatus] = useState(false)
 
+//Denne staten er brukt som callback i buttonsettings for å kunne returne det nye navnet til knappen
+const [changedBtnName, setChangedBtnName] = useState('')
+
+//Denne staten er for å sette valgt tittel for å snakke med buttonsettings
+const [selectedBtn, setSelectedBtn] = useState('')
+
+//TODO
+const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
+
 //OBS Tilkobling satt i en state, slik at tilkoblingen opprettholder seg
 const [obs, setObs] = useState(new OBSWebSocket());
 
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
+
 const buttonLabels = [
   ['Game Scene', 'Start Stream'],
   ['Be Right Back', 'Love'],
@@ -68,6 +80,15 @@ const buttonIcons = [
   }, [ipAddress]);
 
 
+//Replace the new name in the array
+  function replaceValue(searchValue, replaceValue) {
+    const updatedLabels = buttonLabels.map(row =>
+      row.map(label => (label === searchValue ? replaceValue : label))
+    );
+    setButtonLabels(updatedLabels);
+
+  }
+
    //Funksjon som henter Scene status og håndterer eventuelle errors
   const getSceneBtn = async () => {
     try {
@@ -81,6 +102,11 @@ const buttonIcons = [
       console.error('Error while getting scene:', error);
     }
   };
+
+  const getSceneList = async () => {
+    console.log(await obs.call('GetSceneList'));
+    return obs.call('GetSceneList');
+  }
 
   //En asynkron-funksjon som fungerer som bro til en synk knapp
    const getScene = async (obs) => {
@@ -111,6 +137,15 @@ const buttonIcons = [
     if(buttonTitle == "Start Stream") {
       obs.call('StartStream');
     }
+
+    if(buttonTitle == "getSceneBtn") {
+      getSceneList();
+    }
+  }
+
+  const handleLongPress = (buttonTitle) => {
+    setSelectionWindowVisible(true);
+    setSelectedBtn(buttonTitle)
   }
 
   //Async funksjon for å overføre til synk funksjon
@@ -118,16 +153,24 @@ const buttonIcons = [
     await obs.call('SetCurrentProgramScene', { sceneName: scene });
   };
 
+  //Dette er den overlayen som vises når en knapp holdes inne 
+  function overlayBox (btnName) {
+    return(
+    <View style={{ flex: 1 }}>
+      <ButtonSettings name={btnName} changename={setChangedBtnName} closeBox={setSelectionWindowVisible} changearray={replaceValue} />
+    </View>
+    )
+  }
+
 //Synnes connection-frontend returneres hvis useState connectedStatus ikke stemmer
   if(!connectedStatus) {
     return (
       <View style={stylesconnect.container}>
         <Image style={stylesconnect.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
-        <Text style={stylesconnect.Text}>Connect to OBS</Text>
         <StatusBar style="auto" />
         <TextInput style={stylesconnect.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
         <TouchableOpacity style={stylesconnect.ConnectBtn} onPress={handleButtonClickIP}>  
-        <Text style={stylesconnect.btnText}>Connect</Text>
+        <Text style={stylesconnect.btnText}>Connect Manually</Text>
         </TouchableOpacity>
       </View>
     );
@@ -146,6 +189,7 @@ const buttonIcons = [
      <View style={styles.gridContainer}>
         {buttonLabels.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
+
             {row.map((title, cellIndex) => {
               const color = buttonColors[rowIndex][cellIndex];
               console.log(`Button color: ${color}`);
@@ -163,6 +207,12 @@ const buttonIcons = [
           </View>
         ))}
       </View>
+      
+      {/* If selectionWindowVisible is true, render overlayBox */}
+
+      {selectionWindowVisible &&
+      overlayBox(selectedBtn)
+      }
 
       {/* Bottom Navigation */}
       <View style={styles.navigation}>
@@ -179,7 +229,8 @@ const stylesconnect = StyleSheet.create({
     flex: 1,
     backgroundColor: '#1C3640',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 200,
   },
   Text:{
     color: '#EF824F', 
@@ -187,22 +238,31 @@ const stylesconnect = StyleSheet.create({
   }, 
   ConnectBtn:{
     alignItems: 'center',
+    marginTop:25,
     backgroundColor: '#DE7849',
     padding: 10,
+    height: 39,
+    width: 190,
+    borderRadius:10,
   }, 
   btnText:{
-    fontSize: 20, 
+    fontSize: 18, 
+    color:'white',
+    fontWeight: 500,
   },
   TextInput: {
-    height: 40,
+    height: 60,
     backgroundColor: 'azure', 
     fontSize: 20,  
-    width: 200,
-    
-  },
-  Image:{
-    height: 150, 
     width: 300,
+    borderRadius: 20,
+    textAlign: 'center',
+    marginTop:100,
+  },
+
+  Image:{
+    height: 107, 
+    width: 163,
   }
 
 });
