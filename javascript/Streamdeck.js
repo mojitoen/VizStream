@@ -58,6 +58,11 @@ const App = () => {
         ))}
       </View>
 
+      {selectionWindowVisible &&
+      overlayBox(selectedBtn)
+      }
+
+
       {/* Bottom Navigation */}
       <View style={styles.bottomNavigation}>
 
