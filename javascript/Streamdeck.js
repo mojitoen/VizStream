@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { View, StyleSheet, SafeAreaView, Button, Text , TouchableOpacity} from 'react-native';
 
 const App = () => {
@@ -17,7 +18,28 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       {/* Top Navigation */}
       <View style={styles.navigation}>
+
+
+        {/*Edit knapp*/}
+                {/*         NB        */}
+                {/* Bytt HandleButtonClick til HandleEditClick*/}
+
+        <TouchableOpacity onPress={() => handleButtonClick('Edit')} style={styles.editButton}>
+          <Icon style={styles.editIcon} name="edit" size={30} color="#EF824F" />
+        </TouchableOpacity>
+        
+        {/*Settings knapp*/}
+                {/*         NB        */}
+                {/* Bytt HandleButtonClick til HandleSettingsClick*/}
+
+
+        <TouchableOpacity onPress={() =>handleButtonClick('Settings')} style={styles.settingsButton}>
+          <Icon style={styles.gearIcon} name="gear" size={30} color="#EF824F" />
+        </TouchableOpacity>
+
+
         {/* Add your components for top navigation */}
+
       </View>
 
       {/* Grid */}
@@ -40,9 +62,19 @@ const App = () => {
         ))}
       </View>
 
+      {selectionWindowVisible &&
+      overlayBox(selectedBtn)
+      }
+
+
       {/* Bottom Navigation */}
-      <View style={styles.navigation}>
-        {/* Add your components for bottom navigation */}
+      <View style={styles.bottomNavigation}>
+
+              <TouchableOpacity onPress={() => handleButtonClick('Plus')} style={styles.addButton}>
+                <Text style={styles.addButtonIcon}>+</Text>
+              </TouchableOpacity>
+
+
       </View>
     </SafeAreaView>
   );
@@ -57,8 +89,9 @@ const styles = StyleSheet.create({
   navigation: {
     height: 50,
     backgroundColor: '#1C3640',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+
   },
   gridContainer: {
     flex: 1,
@@ -80,6 +113,41 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+    editButton: {
+      justifyContent: 'center',
+      alignItems: 'flex-start'
+    },
+    settingsButton: {
+      justifyContent: 'center',
+      alignItems: 'flex-end'
+    },
+    bottomNavigation:{
+      justifyContent: 'center',
+      alignItems: 'center',
+
+    },
+    addButton: {
+      width: 50,
+      height: 50,
+      backgroundColor: '#EF824F',
+      borderRadius: 25,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 10,
+      
+    },
+    addButtonIcon: {
+      color: 'white',
+      fontSize: 40
+
+    },
+    editIcon: {
+      paddingLeft: 20
+    },
+    gearIcon:{
+      paddingRight: 20
+    }
 });
+
 
 export default App;
