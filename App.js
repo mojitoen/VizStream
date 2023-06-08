@@ -134,30 +134,30 @@ const buttonIcons = [
     setIpAddress(inputText)
   };
 
+  //Håndter sceneSkifte-funksjonalitet
+
   //Funksjon for å trykke på knapper
   const handleButtonClick = (buttonTitle) => {
-    console.log(buttonTitle + " pressed")
+    getSceneList();
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
-    if(buttonTitle == "Set Scene to Game Scene") {
-      setScene(obs, "Playing Game")
-    }
+    try {
 
-    if(buttonTitle == "Set Scene to Be Right Back") {
-      setScene(obs, "Be Right Back")
+      if(sceneList.includes(buttonTitle)) {
+        setScene(obs, buttonTitle);
     }
-
-    if(buttonTitle == "Set Scene to TalkToChat") {
-      setScene(obs, "TalkToChat")
+      else if(buttonTitle === "Start Stream") {
+        obs.call('StartStream');
     }
-
-    if(buttonTitle == "Start Stream") {
-      obs.call('StartStream');
+      else if(buttonTitle === "Stop Stream") {
+        obs.call('StopStream');
     }
-
-    if(buttonTitle == "getSceneBtn") {
-      getSceneList();
     }
+    catch(error) {
+      console.log(error);
+    }
+    
+    
   }
 
   const handleLongPress = (buttonTitle) => {
@@ -179,15 +179,17 @@ const buttonIcons = [
       <View style={[styleCustomizeWindow.container, styleCustomizeWindow.overlayBoxContainer]}>
         <Text style={styleCustomizeWindow.title}>What should this button do?</Text>
       {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
-      <TouchableOpacity onPress={() => {console.log("button set to start stream")}}>
+
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, "Start Stream");setSelectionWindowVisible(false);}}>
         <Text style={styleCustomizeWindow.text}>Start Stream</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => {console.log("button set to getSceneBtn")}}>
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, "Stop Stream");setSelectionWindowVisible(false);}}>
         <Text style={styleCustomizeWindow.text}>Stop Stream</Text>
       </TouchableOpacity>
       <Text style={styleCustomizeWindow.setScene}>Set scene to: </Text>
       {sceneList.map((scene) => (
-        <TouchableOpacity onPress={() => {console.log("TEMP PLACEHOLDER: BUTTON NOW SET TO ACTIVATE SCENE")}}>
+
+        <TouchableOpacity onPress={() => {replaceValue(selectedBtn, scene);setSelectionWindowVisible(false);}}>
           <Text style={styleCustomizeWindow.text}>{scene}</Text>
           </TouchableOpacity>
       ))}
