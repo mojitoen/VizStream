@@ -19,6 +19,7 @@ const App = () => {
       {/* Top Navigation */}
       <View style={styles.navigation}>
 
+
         {/*Edit knapp*/}
                 {/*         NB        */}
                 {/* Bytt HandleButtonClick til HandleEditClick*/}
@@ -35,6 +36,9 @@ const App = () => {
         <TouchableOpacity onPress={() =>handleButtonClick('Settings')} style={styles.settingsButton}>
           <Icon style={styles.gearIcon} name="gear" size={30} color="#EF824F" />
         </TouchableOpacity>
+
+
+        {/* Add your components for top navigation */}
 
       </View>
 
@@ -70,6 +74,7 @@ const App = () => {
                 <Text style={styles.addButtonIcon}>+</Text>
               </TouchableOpacity>
 
+
       </View>
     </SafeAreaView>
   );
@@ -86,6 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C3640',
     flexDirection: 'row',
     justifyContent: 'space-between'
+
   },
   gridContainer: {
     flex: 1,
@@ -142,5 +148,6 @@ const styles = StyleSheet.create({
       paddingRight: 20
     }
 });
+
 
 export default App;
