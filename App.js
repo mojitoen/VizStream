@@ -176,30 +176,33 @@ const buttonIcons = [
   //Dette er den overlayen som vises når en knapp holdes inne 
   function overlayBox (btnName) {
     return(
-    <View style={styleCustomizeWindow.container}>
-      <Text>What should this button do?</Text>
+      <View style={[styleCustomizeWindow.container, styleCustomizeWindow.overlayBoxContainer]}>
+        <Text style={styleCustomizeWindow.title}>What should this button do?</Text>
       {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
       <TouchableOpacity onPress={() => {console.log("button set to start stream")}}>
-        <Text>Start Stream</Text>
+        <Text style={styleCustomizeWindow.text}>Start Stream</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => {console.log("button set to getSceneBtn")}}>
-        <Text>Stop Stream</Text>
+        <Text style={styleCustomizeWindow.text}>Stop Stream</Text>
       </TouchableOpacity>
-      <Text>Set scene to: </Text>
+      <Text style={styleCustomizeWindow.setScene}>Set scene to: </Text>
       {sceneList.map((scene) => (
         <TouchableOpacity onPress={() => {console.log("TEMP PLACEHOLDER: BUTTON NOW SET TO ACTIVATE SCENE")}}>
-          <Text>{scene}</Text>
+          <Text style={styleCustomizeWindow.text}>{scene}</Text>
           </TouchableOpacity>
       ))}
       
-      <Text>Change Button Label</Text>
-      <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}></TextInput>
+      <Text style={styleCustomizeWindow.text}>Change Button Label</Text>
+      <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}style={styleCustomizeWindow.text}></TextInput>
       <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false);setButtonLabelValue("");}}>
-        <Text>Apply changes</Text>
-      </TouchableOpacity>
+  <View style={styleCustomizeWindow.applyChangesContainer}>
+    <Text style={styleCustomizeWindow.applyChangesText}>Apply changes</Text>
+  </View>
+</TouchableOpacity>
     </View>
     )
   }
+  
 
 //Synnes connection-frontend returneres hvis useState connectedStatus ikke stemmer
   if(!connectedStatus) {
@@ -402,7 +405,45 @@ cell: {
 
 
 const styleCustomizeWindow = StyleSheet.create({
+  overlayBoxContainer: {
+  backgroundColor:'#E8E8E8',
+  borderRadius:15,
+  justifyContent: 'center',
+  alignItems: 'center',
+  width:300,
+  padding:10,
+  alignSelf: 'center',
+  },
 
+  title:{
+    fontWeight: 'bold',
+     fontSize:20,
+     marginBottom:10,
+  },
+
+  text: {
+    fontSize: 17, // Increase the font size for all the text inside the box
+    marginBottom: 5, // Add margin at the bottom for all the text
+    textDecorationLine: 'underline', // Add an underline style
+  },
+
+applyChangesContainer: {
+  backgroundColor: '#DE7849',
+  padding: 10,
+  borderRadius: 15,
+  margin:10,
+},
+applyChangesText: {
+  color: 'white',
+  fontSize:18
+},
+
+setScene:{
+  fontWeight:'bold',
+  margin:10,
+  fontSize:16,
+}
+  
 });
 
 
