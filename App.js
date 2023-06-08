@@ -140,7 +140,7 @@ const buttonIcons = [
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
     if(buttonTitle == "Set Scene to Game Scene") {
-      setScene(obs, "Game Scene")
+      setScene(obs, "Playing Game")
     }
 
     if(buttonTitle == "Set Scene to Be Right Back") {
@@ -165,6 +165,7 @@ const buttonIcons = [
     getSceneList();
     setSelectionWindowVisible(true);
     setSelectedBtn(buttonTitle)
+    setButtonLabelValue(buttonTitle);
   }
 
   //Async funksjon for å overføre til synk funksjon
@@ -210,13 +211,30 @@ const buttonIcons = [
       {/* Grid */}
 
       return (
-    <SafeAreaView style={styles.container}>
-      {/* Top Navigation */}
-      <View style={styles.navigation}>
-        {/* Add your components for top navigation */}
-      </View>
-
-     {/* Grid */}
+        <SafeAreaView style={styles.container}>
+        {/* Top Navigation */}
+        <View style={styles.navigation}>
+  
+          {/*Edit knapp*/}
+                  {/*         NB        */}
+                  {/* Bytt HandleButtonClick til HandleEditClick*/}
+  
+          <TouchableOpacity onPress={() => handleButtonClick('Edit')} style={styles.editButton}>
+            <Icon style={styles.editIcon} name="edit" size={30} color="#EF824F" />
+          </TouchableOpacity>
+          
+          {/*Settings knapp*/}
+                  {/*         NB        */}
+                  {/* Bytt HandleButtonClick til HandleSettingsClick*/}
+  
+  
+          <TouchableOpacity onPress={() =>handleButtonClick('Settings')} style={styles.settingsButton}>
+            <Icon style={styles.gearIcon} name="gear" size={30} color="#EF824F" />
+          </TouchableOpacity>
+  
+        </View>
+  
+        {/* Grid */}
      <View style={styles.gridContainer}>
         {buttonLabels.map((row, rowIndex) => (
           <View key={rowIndex} style={styles.row}>
@@ -238,18 +256,21 @@ const buttonIcons = [
           </View>
         ))}
       </View>
-      
-      {/* If selectionWindowVisible is true, render overlayBox */}
-
-      {selectionWindowVisible &&
-      overlayBox(selectedBtn)
-      }
-
-      {/* Bottom Navigation */}
-      <View style={styles.navigation}>
-        {/* Add your components for bottom navigation */}
-      </View>
-    </SafeAreaView>
+  
+        {selectionWindowVisible &&
+        overlayBox(selectedBtn)
+        }
+  
+  
+        {/* Bottom Navigation */}
+        <View style={styles.bottomNavigation}>
+  
+                <TouchableOpacity onPress={() => handleButtonClick('Plus')} style={styles.addButton}>
+                  <Text style={styles.addButtonIcon}>+</Text>
+                </TouchableOpacity>
+  
+        </View>
+      </SafeAreaView>
   );
 }
 }
@@ -310,8 +331,8 @@ const styles = StyleSheet.create({
 navigation: {
   height: 50,
   backgroundColor: '#1C3640',
-  justifyContent: 'center',
-  alignItems: 'center',
+  flexDirection: 'row',
+  justifyContent: 'space-between'
 },
 gridContainer: {
   flex: 1,
@@ -321,7 +342,6 @@ gridContainer: {
 row: {
   flex: 1,
   flexDirection: 'row',
-  margin:10,
 },
 cell: {
   flex: 1,
@@ -330,13 +350,47 @@ cell: {
   borderWidth: 1,
   borderRadius: 25,
   borderColor: 'black',
-  margin:10,
+  margin: 10,
 },  
   buttonText: {
   color: 'white',
   fontSize: 16,
   marginTop: 10,
 },
+  editButton: {
+    justifyContent: 'center',
+    alignItems: 'flex-start'
+  },
+  settingsButton: {
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  },
+  bottomNavigation:{
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  addButton: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#EF824F',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    
+  },
+  addButtonIcon: {
+    color: 'white',
+    fontSize: 40
+
+  },
+  editIcon: {
+    paddingLeft: 20
+  },
+  gearIcon:{
+    paddingRight: 20
+  }
 });
 
 
