@@ -1,4 +1,5 @@
 import React from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { View, StyleSheet, SafeAreaView, Button, Text , TouchableOpacity} from 'react-native';
 
 const App = () => {
@@ -23,7 +24,7 @@ const App = () => {
                 {/* Bytt HandleButtonClick til HandleEditClick*/}
 
         <TouchableOpacity onPress={() => handleButtonClick('Edit')} style={styles.editButton}>
-          <Text style={styles.buttonText}>Edit Button</Text>
+          <Icon style={styles.editIcon} name="edit" size={30} color="#EF824F" />
         </TouchableOpacity>
         
         {/*Settings knapp*/}
@@ -32,7 +33,7 @@ const App = () => {
 
 
         <TouchableOpacity onPress={() =>handleButtonClick('Settings')} style={styles.settingsButton}>
-          <Text style={styles.buttonText}>Settings</Text>
+          <Icon style={styles.gearIcon} name="gear" size={30} color="#EF824F" />
         </TouchableOpacity>
 
       </View>
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     addButton: {
       width: 50,
       height: 50,
-      backgroundColor: 'orange',
+      backgroundColor: '#EF824F',
       borderRadius: 25,
       justifyContent: 'center',
       alignItems: 'center',
@@ -128,6 +129,12 @@ const styles = StyleSheet.create({
       color: 'white',
       fontSize: 40
 
+    },
+    editIcon: {
+      paddingLeft: 20
+    },
+    gearIcon:{
+      paddingRight: 20
     }
 });
 
