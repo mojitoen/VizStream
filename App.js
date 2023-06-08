@@ -179,12 +179,19 @@ const buttonIcons = [
     <View style={styleCustomizeWindow.container}>
       <Text>What should this button do?</Text>
       {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
+      <TouchableOpacity onPress={() => {console.log("button set to start stream")}}>
+        <Text>Start Stream</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {console.log("button set to getSceneBtn")}}>
+        <Text>Stop Stream</Text>
+      </TouchableOpacity>
       <Text>Set scene to: </Text>
       {sceneList.map((scene) => (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => {console.log("TEMP PLACEHOLDER: BUTTON NOW SET TO ACTIVATE SCENE")}}>
           <Text>{scene}</Text>
           </TouchableOpacity>
       ))}
+      
       <Text>Change Button Label</Text>
       <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}></TextInput>
       <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false);setButtonLabelValue("");}}>
