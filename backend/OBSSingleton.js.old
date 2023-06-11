@@ -1,3 +1,5 @@
+//Gammel fil. ble bare brukt for testing
+
 const WebSocket = require("ws");
 
 const ws = new WebSocket("ws://localhost:4455");
