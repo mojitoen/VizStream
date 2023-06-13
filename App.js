@@ -32,6 +32,9 @@ const [obs, setObs] = useState(new OBSWebSocket());
 //Usestate for listen over hvilke scener vi har tilgjengelig
 const [sceneList, setSceneList] = useState([]);
 
+//Usestate for listen over hvilke ffmpeg kilder vi har tilgjengelig
+const [ffmpegSource, setffmpegSource] = useState([]);
+
 //Usestate for midlertidig lagring av button-labels
 const [buttonLabelValue, setButtonLabelValue] = useState("");
 
@@ -124,10 +127,26 @@ const buttonIcons = [
     return sceneNames;
   }
 
-  //En asynkron-funksjon som fungerer som bro til en synk knapp
-   const getScene = async (obs) => {
-    return await obs.call('GetCurrentProgramScene');
-  };
+  //Denne funksjonen skal hente hvilken scene vi er i, og gi oss innholdet
+  const getMediaSourcesList = async (obs) => {
+    let scene = await getScene(obs);
+    let response = await obs.call('GetSceneItemList', {sceneName: scene.currentProgramSceneName});
+    
+    //Henter alle kilder
+    let sourceNames = response.sceneItems.map(source => source.sourceName);
+
+    //Filtrerer ut kilder som ikke er ffmpeg kilder
+    let filteredSources = response.sceneItems.filter(source => source.inputKind === "ffmpeg_source").map(source => source.sourceName);
+    //Console.logs for informasjon om kilder
+    console.log(`List of all sources in scene ${scene.currentProgramSceneName}: ${sourceNames}`);
+    console.log(`List of all ffmpeg sources in scene ${scene.currentProgramSceneName}: ${filteredSources}`);
+
+    setffmpegSource(filteredSources);
+    return filteredSources;
+
+  }
+
+  
 
   //Når bruker klikker "connect" knappen, så settes ipAddress til verdien av inputText sånn at connection funksjonen kjøres.
   const handleButtonClickIP = () => {
@@ -139,10 +158,13 @@ const buttonIcons = [
   //Funksjon for å trykke på knapper
   const handleButtonClick = (buttonTitle) => {
     getSceneList();
+    getMediaSourcesList(obs);
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
     try {
-
+      if(ffmpegSource.includes(buttonTitle)) {
+        playSound(obs, buttonTitle);
+      }
       if(sceneList.includes(buttonTitle)) {
         setScene(obs, buttonTitle);
     }
@@ -163,6 +185,7 @@ const buttonIcons = [
   const handleLongPress = (buttonTitle) => {
     //Henter en liste over scener og setter den i en state
     getSceneList();
+    getMediaSourcesList(obs);
     setSelectionWindowVisible(true);
     setSelectedBtn(buttonTitle)
     setButtonLabelValue(buttonTitle);
@@ -173,6 +196,14 @@ const buttonIcons = [
     await obs.call('SetCurrentProgramScene', { sceneName: scene });
   };
 
+  const playSound = async (obs, sound) => {
+    await obs.call('TriggerMediaInputAction', {inputName: sound, mediaAction: "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART"});
+  }
+
+//En asynkron-funksjon som fungerer som bro til en synk knapp
+   const getScene = async (obs) => {
+    return await obs.call('GetCurrentProgramScene');
+  };
   //Dette er den overlayen som vises når en knapp holdes inne 
   function overlayBox (btnName) {
     return(
@@ -191,8 +222,16 @@ const buttonIcons = [
 
         <TouchableOpacity onPress={() => {replaceValue(selectedBtn, scene);setSelectionWindowVisible(false);}}>
           <Text style={styleCustomizeWindow.text}>{scene}</Text>
-          </TouchableOpacity>
+        </TouchableOpacity>
       ))}
+       {/*SOUNDBOARD--Her henter vi listen over FFMPEGkilder vi finner og lar brukeren velge hvilken som er satt */}
+      <Text style={styleCustomizeWindow.setScene}>Soundboard sounds in current scene:  </Text>
+      {ffmpegSource.map((sound) => (
+
+        <TouchableOpacity onPress={() => {replaceValue(selectedBtn, sound);setSelectionWindowVisible(false);}}>
+          <Text style={styleCustomizeWindow.text}>{sound}</Text>
+        </TouchableOpacity>
+))}
       
       <Text style={styleCustomizeWindow.text}>Change Button Label</Text>
       <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}style={styleCustomizeWindow.text}></TextInput>
