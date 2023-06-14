@@ -25,12 +25,18 @@ const [selectedBtn, setSelectedBtn] = useState('')
 
 //TODO
 const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
+const [buttonDeckVisible, setButtonDeckVisible] = useState(true);
 
 //OBS Tilkobling satt i en state, slik at tilkoblingen opprettholder seg
 const [obs, setObs] = useState(new OBSWebSocket());
 
 //Usestate for listen over hvilke scener vi har tilgjengelig
 const [sceneList, setSceneList] = useState([]);
+
+//Usestate for listen over hvilke ffmpeg kilder vi har tilgjengelig
+const [ffmpegSource, setffmpegSource] = useState([]);
+
+const [buttonIconSize, setButtonIconSize] = useState(50);
 
 //Usestate for midlertidig lagring av button-labels
 const [buttonLabelValue, setButtonLabelValue] = useState("");
@@ -124,25 +130,42 @@ const buttonIcons = [
     return sceneNames;
   }
 
-  //En asynkron-funksjon som fungerer som bro til en synk knapp
-   const getScene = async (obs) => {
-    return await obs.call('GetCurrentProgramScene');
-  };
+  //Denne funksjonen skal hente hvilken scene vi er i, og gi oss innholdet
+  const getMediaSourcesList = async (obs) => {
+    let scene = await getScene(obs);
+    let response = await obs.call('GetSceneItemList', {sceneName: scene.currentProgramSceneName});
+    
+    //Henter alle kilder
+    let sourceNames = response.sceneItems.map(source => source.sourceName);
+
+    //Filtrerer ut kilder som ikke er ffmpeg kilder
+    let filteredSources = response.sceneItems.filter(source => source.inputKind === "ffmpeg_source").map(source => source.sourceName);
+    
+    setffmpegSource(filteredSources);
+    return filteredSources;
+
+  }
+
+  
 
   //Når bruker klikker "connect" knappen, så settes ipAddress til verdien av inputText sånn at connection funksjonen kjøres.
   const handleButtonClickIP = () => {
     setIpAddress(inputText)
   };
 
-  //Håndter sceneSkifte-funksjonalitet
 
   //Funksjon for å trykke på knapper
   const handleButtonClick = (buttonTitle) => {
     getSceneList();
+    getMediaSourcesList(obs);
     //Midlertidig hardcode
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
     try {
-
+      //Soundboard
+      if(ffmpegSource.includes(buttonTitle)) {
+        playSound(obs, buttonTitle);
+      }
+      //Scene-skifte
       if(sceneList.includes(buttonTitle)) {
         setScene(obs, buttonTitle);
     }
@@ -163,9 +186,12 @@ const buttonIcons = [
   const handleLongPress = (buttonTitle) => {
     //Henter en liste over scener og setter den i en state
     getSceneList();
+    getMediaSourcesList(obs);
     setSelectionWindowVisible(true);
+    setButtonDeckVisible(false);
     setSelectedBtn(buttonTitle)
     setButtonLabelValue(buttonTitle);
+    setButtonIconSize(0);
   }
 
   //Async funksjon for å overføre til synk funksjon
@@ -173,6 +199,14 @@ const buttonIcons = [
     await obs.call('SetCurrentProgramScene', { sceneName: scene });
   };
 
+  const playSound = async (obs, sound) => {
+    await obs.call('TriggerMediaInputAction', {inputName: sound, mediaAction: "OBS_WEBSOCKET_MEDIA_INPUT_ACTION_RESTART"});
+  }
+
+//En asynkron-funksjon som fungerer som bro til en synk knapp
+   const getScene = async (obs) => {
+    return await obs.call('GetCurrentProgramScene');
+  };
   //Dette er den overlayen som vises når en knapp holdes inne 
   function overlayBox (btnName) {
     return(
@@ -180,23 +214,31 @@ const buttonIcons = [
         <Text style={styleCustomizeWindow.title}>What should this button do?</Text>
       {/*Denne sceneList.map henter inn det filtrerte resultatet fra getSceneList og looper gjennom det, for øyeblikket i tekstform */}
 
-      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, "Start Stream");setSelectionWindowVisible(false);}}>
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, "Start Stream");setSelectionWindowVisible(false);setButtonIconSize(50)}}>
         <Text style={styleCustomizeWindow.text}>Start Stream</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, "Stop Stream");setSelectionWindowVisible(false);}}>
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, "Stop Stream");setSelectionWindowVisible(false);setButtonIconSize(50)}}>
         <Text style={styleCustomizeWindow.text}>Stop Stream</Text>
       </TouchableOpacity>
       <Text style={styleCustomizeWindow.setScene}>Set scene to: </Text>
       {sceneList.map((scene) => (
 
-        <TouchableOpacity onPress={() => {replaceValue(selectedBtn, scene);setSelectionWindowVisible(false);}}>
+        <TouchableOpacity onPress={() => {replaceValue(selectedBtn, scene);setSelectionWindowVisible(false);setButtonIconSize(50)}}>
           <Text style={styleCustomizeWindow.text}>{scene}</Text>
-          </TouchableOpacity>
+        </TouchableOpacity>
       ))}
+       {/*SOUNDBOARD--Her henter vi listen over FFMPEGkilder vi finner og lar brukeren velge hvilken som er satt */}
+      <Text style={styleCustomizeWindow.setScene}>Soundboard sounds in current scene:  </Text>
+      {ffmpegSource.map((sound) => (
+
+        <TouchableOpacity onPress={() => {replaceValue(selectedBtn, sound);setSelectionWindowVisible(false);setButtonIconSize(50)}}>
+          <Text style={styleCustomizeWindow.text}>{sound}</Text>
+        </TouchableOpacity>
+))}
       
-      <Text style={styleCustomizeWindow.text}>Change Button Label</Text>
+      <Text style={styleCustomizeWindow.setScene}>Change Button Label manually</Text>
       <TextInput placeholder='Button Label' value={buttonLabelValue} onChangeText={setButtonLabelValue}style={styleCustomizeWindow.text}></TextInput>
-      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false);setButtonLabelValue("");}}>
+      <TouchableOpacity onPress={() => {replaceValue(selectedBtn, buttonLabelValue);setSelectionWindowVisible(false);setButtonLabelValue("");setButtonIconSize(50)}}>
   <View style={styleCustomizeWindow.applyChangesContainer}>
     <Text style={styleCustomizeWindow.applyChangesText}>Apply changes</Text>
   </View>
@@ -260,7 +302,7 @@ const buttonIcons = [
                   onPress={() => handleButtonClick(title)}
                   onLongPress={() => handleLongPress(title)}
                 >
-                  <Icon name={buttonIcons[rowIndex][cellIndex]} size={50} color="white" />
+                  <Icon name={buttonIcons[rowIndex][cellIndex]} size={buttonIconSize} color="white" />
                   <Text style={styles.buttonText}>{title}</Text>
                 </TouchableOpacity>
               );
@@ -394,7 +436,8 @@ cell: {
   },
   addButtonIcon: {
     color: 'white',
-    fontSize: 40
+    fontSize: 40,
+    marginTop:-5
 
   },
   editIcon: {
