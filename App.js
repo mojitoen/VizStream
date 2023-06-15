@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, Image, SafeAreaView} from 'react-native';
 import React from 'react';
 import OBSWebSocket from 'obs-websocket-js';
-import ButtonSettings from './javascript/ButtonSettings';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
@@ -17,15 +16,11 @@ const [inputText, setInputText] = useState('');
 //State var for checking whether or not we are connected
 const [connectedStatus, setConnectedStatus] = useState(false)
 
-//Denne staten er brukt som callback i buttonsettings for å kunne returne det nye navnet til knappen
-const [changedBtnName, setChangedBtnName] = useState('')
-
 //Denne staten er for å sette valgt tittel for å snakke med buttonsettings
 const [selectedBtn, setSelectedBtn] = useState('')
 
 //TODO
 const [selectionWindowVisible, setSelectionWindowVisible] = useState(false);
-const [buttonDeckVisible, setButtonDeckVisible] = useState(true);
 
 //OBS Tilkobling satt i en state, slik at tilkoblingen opprettholder seg
 const [obs, setObs] = useState(new OBSWebSocket());
@@ -66,14 +61,6 @@ const [buttonLabels, setButtonLabels] = useState([
   ['Talk to Chat', 'Record'],
   ['Mute', 'Audio Mixer']
 ]);
-/*Dette er fremtiden til buttonlabels
-const [buttonLabels, setButtonLabels] = useState([
-  {key: "setScene", label: "Game Scene"},
-  {key: "setScene", label: "Be Right Back"},
-  {key: "setScene", label: "Talk to Chat"},
-  {key: "startStream", label: "Start Stream"},
-  {key: "getSceneBtn", label: "getSceneBtn"}
-])*/
 
 // Array av farger til knappene
 const buttonColors = [
@@ -126,19 +113,6 @@ const buttonIcons = [
 
   }
 
-   //Funksjon som henter Scene status og håndterer eventuelle errors
-  const getSceneBtn = async () => {
-    try {
-      if (obs) {
-        console.log(await getScene(obs));
-        return await getScene(obs);
-      } else {
-        console.error('OBS connection not established.');
-      }
-    } catch (error) {
-      console.error('Error while getting scene:', error);
-    }
-  };
 
   //Denne funksjonen henter og returnerer en ren liste med alle scener
   const getSceneList = async () => {
@@ -154,7 +128,7 @@ const buttonIcons = [
     let scene = await getScene(obs);
     let response = await obs.call('GetSceneItemList', {sceneName: scene.currentProgramSceneName});
     
-    //Henter alle kilder
+    //Henter alle kilder, men blir ikke brukt
     let sourceNames = response.sceneItems.map(source => source.sourceName);
 
     //Filtrerer ut kilder som ikke er ffmpeg kilder
@@ -177,7 +151,7 @@ const buttonIcons = [
   const handleButtonClick = (buttonTitle) => {
     getSceneList();
     getMediaSourcesList(obs);
-    //Midlertidig hardcode
+    //For nå så styres denne av hvilken tittel knappene har: dette burde endres på hvis det blir tid
     //Her er det kanskje kurant å sette opp så mange knappe-funksjoner som mulig, så kan vi definere her hva en individuell knapp gjør
     try {
       //Soundboard
@@ -207,7 +181,6 @@ const buttonIcons = [
     getSceneList();
     getMediaSourcesList(obs);
     setSelectionWindowVisible(true);
-    setButtonDeckVisible(false);
     setSelectedBtn(buttonTitle)
     setButtonLabelValue(buttonTitle);
     setButtonIconSize(0);
