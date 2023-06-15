@@ -367,7 +367,7 @@ const stylesconnect = StyleSheet.create({
     marginTop:25,
     backgroundColor: '#DE7849',
     padding: 10,
-    height: 39,
+    height: 45,
     width: 190,
     borderRadius:10,
   }, 
