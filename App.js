@@ -41,6 +41,24 @@ const [buttonIconSize, setButtonIconSize] = useState(50);
 //Usestate for midlertidig lagring av button-labels
 const [buttonLabelValue, setButtonLabelValue] = useState("");
 
+const [opacity, setOpacity] = useState(0)
+
+//Usestate for feilet login
+
+const loginFailed=() =>{
+  setOpacity(opacity === 0 ? 1 : 0)
+};
+
+const failedStyle = {
+  opacity: opacity,
+  color: 'red',
+  fontSize: 20,
+  padding: 10,
+
+}
+
+
+
 //Midlertidig satt knappe-verdier. Disse kan heller hentes fra en JSON-fil slik at tittelen til knappen bestemmer hva knappen gjør
 const [buttonLabels, setButtonLabels] = useState([
   ['Game Scene', 'Start Stream'],
@@ -86,6 +104,7 @@ const buttonIcons = [
         //Error catcher  
       } catch (error) {
         console.error('Failed to connect', error.code, error.message);
+        loginFailed();
         setIpAddress('');
       }
     };
@@ -255,6 +274,7 @@ const buttonIcons = [
         <Image style={stylesconnect.Image} source={require('./assets/vizrt-logo-front.png')}></Image>
         <StatusBar style="auto" />
         <TextInput style={stylesconnect.TextInput} value={inputText} onChangeText={setInputText} placeholder="IP-address"/>
+        <Text style={failedStyle}>Failed to log in. Please try again</Text>
         <TouchableOpacity style={stylesconnect.ConnectBtn} onPress={handleButtonClickIP}>  
         <Text style={stylesconnect.btnText}>Connect Manually</Text>
         </TouchableOpacity>
