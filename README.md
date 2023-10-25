@@ -14,8 +14,10 @@ Og kan i etterkant enkelt aktiveres ved å klikke på knappen:
 ![image](https://github.com/mojitoen/VizStream/assets/66651087/c5e437ac-260c-4e12-911f-b68450eac9cd)
 
 
+Vi har brukt Expo Go for dev-miljøet: du kan teste og installere her.
+
  
- Installasjon
+ # Installasjon
  iOS
  https://apps.apple.com/us/app/expo-go/id982107779
  
@@ -26,6 +28,21 @@ Og kan i etterkant enkelt aktiveres ved å klikke på knappen:
  Da får du en QR-kode i terminalen du kan skanne fra mobil-appen og appen burde åpne seg.
  
  OBS! Denne løsningen bruker det interne nettverket, og vil sannsynligvis ha problemer på skolenettet.
+
+# Oppsett: 
+ OBS: 
+ Åpne opp OBS -> Tools -> Websocket Server Settings
+ Tick Enable WebSocket Server
+ Porten er valgfri, men anbefaler 4455.
+ Applikasjonen har for øyeblikket ikke støtte for autentisering, så untick Enable Authentication
+ Finn frem IP-addresse med valgri metode
+
+ Applikasjon:
+ Sørg for at applikasjonen og klienten som kjører OBS er på samme nettverk, legg inn IP-addresse i connection-feltet og legg til en kolon med porten.
+ Eksempel: 
+
+ ![image](https://github.com/mojitoen/VizStream/assets/66651087/96625815-0de0-454f-8363-1a293a5f0fa7)
+
 
 Design-sprinten vår: 
 [Google Design Sprint](https://github.com/mojitoen/VizStream/files/13166103/Google-design-sprint.pdf)
