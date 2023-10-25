@@ -13,3 +13,5 @@
  OBS! Denne løsningen bruker det interne nettverket, og vil sannsynligvis ha problemer på skolenettet.
 
 
+[Google-design-sprint.pdf](https://github.com/mojitoen/VizStream/files/13166103/Google-design-sprint.pdf)
+
